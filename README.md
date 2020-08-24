@@ -39,12 +39,12 @@ using Microsoft.EntityFrameworkCore;
     </td>
     <td class="col2">
       <pre lang="csharp">
-s
+[placeholder]
       </pre>
     </td>
     <td class="col3">
       <pre lang="csharp">
-      ????
+[placeholder]
 - Reference System.Configuration.ConfigurationManager from NuGet, then get connection string from app.config with:ConfigurationManager.AppSettings[ConnectionStringName];
 -appSettings.json?
       </pre>
