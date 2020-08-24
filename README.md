@@ -1,6 +1,6 @@
-# Entity Framework to EF Core Porting Guide
+# Entity Framework to EF Core Porting Cheat Sheet
 
-This is a one-stop shop guide for porting Entity Framework to EF Core based on commonly-used features and APIs.
+Overview of porting Entity Framework to EF Core based on commonly-used features and APIs.
 
 <!----------- INITIAL CHANGES ----------->
 
@@ -290,7 +290,7 @@ var local = dbContext.Repos.Local.ToObservableCollection();
     <td class="col1">
       <b>Database Creation/Deletion</b>
       <br>
-      Methods to created and delete a database have been renamed.
+      Methods to create/delete a database have been renamed.
     </td>
     <td class="col2">
       <pre lang="csharp">
