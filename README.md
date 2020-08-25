@@ -507,24 +507,22 @@ IDbContextTransaction transaction = dbContext.Database.BeginTransaction();
       <pre lang="csharp">
 // Sql string
 DbSet.SqlQuery("SELECT * FROM MyTable");
-
+<br>
 // Parameterized query
-DbSet.SqlQuery("SELECT \_ FROM MyTable WHERE id={0}", id);
-
-</pre>
-</td>
-<td class="col3">
-<pre lang="csharp">
+DbSet.SqlQuery("SELECT * FROM MyTable WHERE id={0}", id);
+      </pre>
+    </td>
+    <td class="col3">
+      <pre lang="csharp">
 // Sql string
-DbSet.FromSqlRaw("SELECT _ FROM MyTable");
-
+DbSet.FromSqlRaw("SELECT * FROM MyTable");
+<br>
 // Parameterized query
-DbSet.FromSqlRaw("SELECT \* FROM MyTable WHERE id={0}", id);
-
+DbSet.FromSqlRaw("SELECT * FROM MyTable WHERE id={0}", id);
+<br>
 // Parameterized query with interpolated string
-DbSet.FromSqlInterpolated(\$"SELECT \* FROM MyTable WHERE id={id}");
-
-</pre>
+DbSet.FromSqlInterpolated($"SELECT * FROM MyTable WHERE id={id}");
+      </pre>
 </td>
 
   </tr>
@@ -555,6 +553,29 @@ dbContext.Database.ExecuteSqlInterpolated($"sp_InsertId {id}");
       </pre>
     </td>
   </tr>
+  <tr>
+    <td class="col1">
+      <b>Compiled queries</b>
+    </td>
+    <td class="col2">
+      <pre lang="csharp">
+using System.Data.Objects;
+<br>
+CompiledQuery.Compile&lt;TContext, TParam1, ..., TParamN, TResult&gt;(
+    // LINQ query
+);
+      </pre>
+    </td>
+    <td class="col3">
+      <pre lang="csharp">
+using Microsoft.EntityFrameworkCore;
+<br>
+EF.CompileQuery&lt;TContext, TParam1, ..., TParamN, TResult&gt;(
+    // LINQ query
+);
+      </pre>
+    </td>
+  </tr>
 
 <!-- TEMPLATE
   <tr>
@@ -582,7 +603,7 @@ END TEMPLATE -->
 
 ## Missing Features
 
-These Entity Framework features are missing from EF Core and may or may not be implemented in the future.
+These Entity Framework features are missing from EF Core and may or may not be implemented in the future. If your project uses any of these features, consider using EF v6.3+
 
 <table>
   <colgroup>
@@ -597,14 +618,49 @@ These Entity Framework features are missing from EF Core and may or may not be i
  	</tr>
   <tr>
     <td class="col1">
-      TPC (Table-per-Concrete)
-      <br><br>
+      <b>TPC (Table-per-Concrete)</b>
     </td>
     <td class="col2">
       Allows entity classes with an abstract base class to be mapped to separate database tables (abstract base class remains unmapped)
     </td>
     <td class="col3">
       On backlog
+    </td>
+  </tr>
+  <tr>
+    <td class="col1">
+      <b>Entity splitting</b>
+      <br>
+    </td>
+    <td class="col2">
+Allows single entities to be mapped to multiple tables (i.e. a subset of properties mapped to one table, another subset mapped to another table).
+    </td>
+    <td class="col3">
+On backlog
+    </td>
+  </tr>
+  <tr>
+    <td class="col1">
+      <b>Visual Designer</b>
+      <br>
+    </td>
+    <td class="col2">
+GUI-based db modeling tool that automatically generates DbContext and entity classes from a UML diagram. It also includes additional features such as auto-generated CUD stored procedures.
+    </td>
+    <td class="col3">
+Not planned
+    </td>
+  </tr>
+  <tr>
+    <td class="col1">
+      <b>ObjectContext class</b>
+      <br>
+    </td>
+    <td class="col2">
+A low level class used to facilitate data access in a generic manner. It is commonly used when a stored procedure returns multiple result sets that each map to a different entity type.
+    </td>
+    <td class="col3">
+Not planned
     </td>
   </tr>
 
