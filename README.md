@@ -4,7 +4,7 @@ Overview of porting Entity Framework to EF Core based on commonly-used features 
 
 <!----------- INITIAL CHANGES ----------->
 
-## Required Changes
+## Environment Changes
 
 <table>
   <colgroup>
@@ -35,18 +35,36 @@ using Microsoft.EntityFrameworkCore;
   </tr>
   <tr>
     <td class="col1">
-      <b>AppSettings</b>
+      <b><code>web.config</code> and <code>app.config</code> replaced by <code>appsettings.json</code></b>
     </td>
     <td class="col2">
-      <pre lang="csharp">
-[placeholder]
+	    <code>web.config</code>
+      <pre lang="xml">
+&lt;configuration&gt;
+  &lt;connectionStrings&gt;
+    &lt;add name="myConnection" connectionString="server=localhost;database=mydatabase;" /&gt;
+  &lt;/connectionStrings&gt;
+&lt;/configuration&gt;
       </pre>
     </td>
     <td class="col3">
+      <code>appsettings.json</code>
+      <pre lang="json">
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=(localdb)\\MSSQLLocalDB;Database=MyDatabase;Trusted_Connection=True;"
+  },
+}
+      </pre>
+      <code>startup.cs</code>
       <pre lang="csharp">
-[placeholder]
-- Reference System.Configuration.ConfigurationManager from NuGet, then get connection string from app.config with:ConfigurationManager.AppSettings[ConnectionStringName];
--appSettings.json?
+using Microsoft.Extensions.Configuration;
+<br>
+public void ConfigureServices(IServiceCollection services)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;services.AddDbContext<MyDbContext>(options =>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+}
       </pre>
     </td>
   </tr>
@@ -65,7 +83,11 @@ using Microsoft.SqlServer.Types;
       <pre lang="csharp">
 using NetTopologySuite.Geometries;
 <br>
-optionsBuilder.UseSqlServer(connectionString, options => options.UseNetTopologySuite());
+protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+{
+    optionsBuilder.UseSqlServer(connectionString, options 
+        => options.UseNetTopologySuite());
+}
       </pre>
     </td>
   </tr>
@@ -381,6 +403,8 @@ public void OnModelCreating(ModelBuilder modelBuilder)
   </tr>
   <tr>
     <td class="col1">
+      <b>Many:Required relationship configuration</b>
+      <br>
       <code>.WithRequired()</code> replaced by <code>.WithOne().IsRequired()</code>
     </td>
     <td class="col2">
@@ -405,6 +429,8 @@ modelBuilder.Entity&lt;Issue&gt;()
   </tr>
   <tr>
     <td class="col1">
+      <b>Delete behavior</b>
+      <br>
       <code>.WillCascadeOnDelete()</code> replaced by <code>.OnDelete()</code>
     </td>
     <td class="col2">
