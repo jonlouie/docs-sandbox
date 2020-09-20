@@ -32,9 +32,9 @@ Overview of porting Entity Framework to EF Core based on commonly-used features 
       <br/><br/>
     </td>
     <td class="col2">
-      <pre lang="csharp">
+      <pre><code class="csharp">
 using System.Data.Entity;
-      </pre>
+      </code></pre>
     </td>
     <td class="col3">
       <pre lang="csharp">
@@ -65,7 +65,7 @@ using Microsoft.EntityFrameworkCore;
 }
       </pre>
       <code>startup.cs</code>
-      <pre lang="csharp">
+      <pre> <code class="csharp">
 using Microsoft.Extensions.Configuration;
 
 public void ConfigureServices(IServiceCollection services)
@@ -73,7 +73,7 @@ public void ConfigureServices(IServiceCollection services)
 services.AddDbContext&lt;MyDbContext&gt;(options =>
 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 }
-      </pre>
+      </code></pre>
     </td>
   </tr>
   <tr>
