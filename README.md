@@ -91,24 +91,6 @@ protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
       </pre>
     </td>
   </tr>
-<!-- TEMPLATE 
-  <tr>
-    <td class="col1">
-      <b>s</b>
-      <br>
-    </td>
-    <td class="col2">
-      <pre lang="csharp">
-s
-      </pre>
-    </td>
-    <td class="col3">
-      <pre lang="csharp">
-s
-      </pre>
-    </td>
-  </tr>
-END TEMPLATE -->
 </table>
 
 ---
