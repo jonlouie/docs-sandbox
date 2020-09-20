@@ -11,8 +11,6 @@ Overview of porting Entity Framework to EF Core based on commonly-used features 
 * [Missing Features](#missing-features)
 
 ---
-<br> 
-<!----------- INITIAL CHANGES ----------->
 
 ## Required Changes
 
@@ -22,11 +20,11 @@ Overview of porting Entity Framework to EF Core based on commonly-used features 
     <col style="width:40%">
     <col style="width:40%">
   </colgroup>
-	<tr>
-		<th>Description</th>
-		<th>EF Example</th>
-		<th>EF Core Example</th>
- 	</tr>
+  <tr>
+    <th>Description</th>
+    <th>EF Example</th>
+    <th>EF Core Example</th>
+  </tr>
   <tr>
     <td class="col1">
       Replace Entity Framework namespace
@@ -74,9 +72,8 @@ public void ConfigureServices(IServiceCollection services)
 services.AddDbContext<MyDbContext>(options =>
 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 }
-</pre>
-</td>
-
+      </pre>
+    </td>
   </tr>
   <tr>
     <td class="col1">
@@ -97,29 +94,9 @@ optionsBuilder.UseSqlServer(connectionString, options => options.UseNetTopologyS
       </pre>
     </td>
   </tr>
-<!-- TEMPLATE 
-  <tr>
-    <td class="col1">
-      <b>s</b>
-      <br>
-    </td>
-    <td class="col2">
-      <pre lang="csharp">
-s
-      </pre>
-    </td>
-    <td class="col3">
-      <pre lang="csharp">
-s
-      </pre>
-    </td>
-  </tr>
-END TEMPLATE -->
 </table>
 
 ---
-
-<!----------- DB CONTEXT ----------->
 
 ## DbContext Changes
 
@@ -351,30 +328,9 @@ Repo added = dbContext.Repos.Add(repo).Entity;
       </pre>
     </td>
   </tr>
-
-<!-- TEMPLATE
-  <tr>
-    <td class="col1">
-      <b>s</b>
-      <br>
-    </td>
-    <td class="col2">
-      <pre lang="csharp">
-s
-      </pre>
-    </td>
-    <td class="col3">
-      <pre lang="csharp">
-s
-      </pre>
-    </td>
-  </tr>
-END TEMPLATE -->
 </table>
 
 ---
-
-<!----------- DB MODELBUILDER ----------->
 
 ## DbModelBuilder Changes
 
@@ -452,29 +408,7 @@ modelBuilder.Entity&lt;Issue&gt;()
       </pre>
     </td>
   </tr>
-
-<!-- TEMPLATE
-  <tr>
-    <td class="col1">
-      <b>s</b>
-      <br>
-    </td>
-    <td class="col2">
-      <pre lang="csharp">
-s
-      </pre>
-    </td>
-    <td class="col3">
-      <pre lang="csharp">
-s
-      </pre>
-    </td>
-  </tr>
-END TEMPLATE -->
-
-## </table>
-
-<!-- DATA ACCESS AND TRACKING -->
+</table>
 
 ## Data Access and Tracking Changes
 
@@ -608,30 +542,9 @@ EF.CompileQuery&lt;TContext, TParam1, ..., TParamN, TResult&gt;(
       </pre>
     </td>
   </tr>
-
-<!-- TEMPLATE
-  <tr>
-    <td class="col1">
-      <b>s</b>
-      <br>
-    </td>
-    <td class="col2">
-      <pre lang="csharp">
-s
-      </pre>
-    </td>
-    <td class="col3">
-      <pre lang="csharp">
-s
-      </pre>
-    </td>
-  </tr>
-END TEMPLATE -->
 </table>
 
 ---
-
-<!----------- MISSING FEATURES ----------->
 
 ## Missing Features
 
@@ -695,58 +608,4 @@ A low level class used to facilitate data access in a generic manner. It is comm
 Not planned
     </td>
   </tr>
-
-<!-- TEMPLATE
-  <tr>
-    <td class="col1">
-      <b>s</b>
-      <br>
-    </td>
-    <td class="col2">
-      <pre lang="csharp">
-s
-      </pre>
-    </td>
-    <td class="col3">
-      <pre lang="csharp">
-s
-      </pre>
-    </td>
-  </tr>
-END TEMPLATE -->
 </table>
-
-<!-- TABLE TEMPLATE
-## Table title
-
-Table description
-
-<table>
-  <colgroup>
-    <col style="width:20%">
-    <col style="width:40%">
-    <col style="width:40%">
-  </colgroup>
-	<tr>
-		<th>Description</th>
-		<th>EF Example</th>
-		<th>EF Core Example</th>
- 	</tr>
-  <tr>
-    <td class="col1">
-      <b>s</b>
-      <br>
-    </td>
-    <td class="col2">
-      <pre lang="csharp">
-s
-      </pre>
-    </td>
-    <td class="col3">
-      <pre lang="csharp">
-s
-      </pre>
-    </td>
-  </tr>
-</table>
-END TABLE TEMPLATE -->
