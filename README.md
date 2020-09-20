@@ -2,9 +2,19 @@
 
 Overview of porting Entity Framework to EF Core based on commonly-used features and APIs.
 
+---
+## Table of Contents
+* [Required Changes](#required-changes)
+* [DbContext Changes](#dbcontext-changes)
+* [DbModelBuilder Changes](#dbmodelbuilder-changes)
+* [Data Access and Tracking Changes](#data-access-and-tracking-changes)
+* [Missing Features](#missing-features)
+
+---
+<br> 
 <!----------- INITIAL CHANGES ----------->
 
-## Environment Changes
+## Required Changes
 
 <table>
   <colgroup>
@@ -38,7 +48,6 @@ using Microsoft.EntityFrameworkCore;
       <b><code>web.config</code> and <code>app.config</code> replaced by <code>appsettings.json</code></b>
     </td>
     <td class="col2">
-	    <code>web.config</code>
       <pre lang="xml">
 &lt;configuration&gt;
   &lt;connectionStrings&gt;
@@ -59,14 +68,15 @@ using Microsoft.EntityFrameworkCore;
       <code>startup.cs</code>
       <pre lang="csharp">
 using Microsoft.Extensions.Configuration;
-<br>
+
 public void ConfigureServices(IServiceCollection services)
 {
-&nbsp;&nbsp;&nbsp;&nbsp;services.AddDbContext<MyDbContext>(options =>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+services.AddDbContext<MyDbContext>(options =>
+options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 }
-      </pre>
-    </td>
+</pre>
+</td>
+
   </tr>
   <tr>
     <td class="col1">
@@ -83,14 +93,28 @@ using Microsoft.SqlServer.Types;
       <pre lang="csharp">
 using NetTopologySuite.Geometries;
 <br>
-protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-{
-    optionsBuilder.UseSqlServer(connectionString, options 
-        => options.UseNetTopologySuite());
-}
+optionsBuilder.UseSqlServer(connectionString, options => options.UseNetTopologySuite());
       </pre>
     </td>
   </tr>
+<!-- TEMPLATE 
+  <tr>
+    <td class="col1">
+      <b>s</b>
+      <br>
+    </td>
+    <td class="col2">
+      <pre lang="csharp">
+s
+      </pre>
+    </td>
+    <td class="col3">
+      <pre lang="csharp">
+s
+      </pre>
+    </td>
+  </tr>
+END TEMPLATE -->
 </table>
 
 ---
