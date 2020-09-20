@@ -1,24 +1,8 @@
-# Entity Framework to EF Core Porting Cheat Sheet
-
-Overview of porting Entity Framework to EF Core based on commonly-used features and APIs.
-
----
-## Table of Contents
-* [Required Changes](#required-changes)
-* [DbContext Changes](#dbcontext-changes)
-* [DbModelBuilder Changes](#dbmodelbuilder-changes)
-* [Data Access and Tracking Changes](#data-access-and-tracking-changes)
-* [Missing Features](#missing-features)
-
----
-
-## Required Changes
-
 <table>
   <colgroup>
-    <col style="width:20%">
-    <col style="width:40%">
-    <col style="width:40%">
+    <col style="width:20%"/>
+    <col style="width:40%"/>
+    <col style="width:40%"/>
   </colgroup>
   <tr>
     <th>Description</th>
@@ -28,7 +12,7 @@ Overview of porting Entity Framework to EF Core based on commonly-used features 
   <tr>
     <td class="col1">
       Replace Entity Framework namespace
-      <br><br>
+      <br/><br/>
     </td>
     <td class="col2">
       <pre lang="csharp">
@@ -69,7 +53,7 @@ using Microsoft.Extensions.Configuration;
 
 public void ConfigureServices(IServiceCollection services)
 {
-services.AddDbContext<MyDbContext>(options =>
+services.AddDbContext&lt;MyDbContext&gt;(options =>
 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 }
       </pre>
@@ -78,7 +62,7 @@ options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
   <tr>
     <td class="col1">
       <b>Spatial data types</b>
-      <br>
+      <br/>
       Requires Nuget package: <code>NetTopologySuite</code>
     </td>
     <td class="col2">
@@ -89,7 +73,7 @@ using Microsoft.SqlServer.Types;
     <td class="col3">
       <pre lang="csharp">
 using NetTopologySuite.Geometries;
-<br>
+<br/>
 optionsBuilder.UseSqlServer(connectionString, options => options.UseNetTopologySuite());
       </pre>
     </td>
