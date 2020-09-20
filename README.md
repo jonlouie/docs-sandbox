@@ -1,3 +1,20 @@
+# Entity Framework to EF Core Porting Cheat Sheet
+
+Overview of porting Entity Framework to EF Core based on commonly-used features and APIs.
+
+---
+## Table of Contents
+* [Required Changes](#required-changes)
+* [DbContext Changes](#dbcontext-changes)
+* [DbModelBuilder Changes](#dbmodelbuilder-changes)
+* [Data Access and Tracking Changes](#data-access-and-tracking-changes)
+* [Missing Features](#missing-features)
+
+---
+<br/> 
+
+## Required Changes
+
 <table>
   <colgroup>
     <col style="width:20%"/>
