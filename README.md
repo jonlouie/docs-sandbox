@@ -3,18 +3,24 @@
 Overview of porting Entity Framework to EF Core based on commonly-used features and APIs.
 
 ---
+
 ## Table of Contents
-* [Required Changes](#required-changes)
-* [DbContext Changes](#dbcontext-changes)
-* [DbModelBuilder Changes](#dbmodelbuilder-changes)
-* [Data Access and Tracking Changes](#data-access-and-tracking-changes)
-* [Missing Features](#missing-features)
+
+- Syntactical changes
+  - [Namespace Changes](#namespace-changes)
+  - [Configuration Changes](#configuration-changes)
+  - [DbContext Changes](#dbcontext-changes)
+  - [DbModelBuilder Changes](#dbmodelbuilder-changes)
+  - [Data Access and Tracking Changes](#data-access-and-tracking-changes)
+- [Behavioral Changes](#behavioral-changes)
+- [Missing Features](#missing-features)
 
 ---
+
 <br/> 
 <!----------- INITIAL CHANGES ----------->
 
-## Required Changes
+## Namespace Changes
 
 <table>
   <colgroup>
@@ -46,6 +52,60 @@ using Microsoft.EntityFrameworkCore;
   </tr>
   <tr>
     <td class="description">
+      <b>Spatial data types</b>
+      <br/>
+      Requires Nuget package: <code>NetTopologySuite</code>
+    </td>
+    <td class="ef-example">
+      <pre lang="csharp">
+using Microsoft.SqlServer.Types;
+      </pre>
+    </td>
+    <td class="ef-core-example">
+      <pre lang="csharp">
+using NetTopologySuite.Geometries;
+<br/>
+optionsBuilder.UseSqlServer(connectionString, options => options.UseNetTopologySuite());
+      </pre>
+    </td>
+  </tr>
+<!-- TEMPLATE 
+  <tr>
+    <td class="description">
+      <b>s</b>
+      <br/>
+    </td>
+    <td class="ef-example">
+      <pre lang="csharp">
+s
+      </pre>
+    </td>
+    <td class="ef-core-example">
+      <pre lang="csharp">
+s
+      </pre>
+    </td>
+  </tr>
+END TEMPLATE -->
+</table>
+
+---
+
+## Configuration Changes
+
+<table>
+  <colgroup>
+    <col style="width:20%">
+    <col style="width:40%">
+    <col style="width:40%">
+  </colgroup>
+	<tr>
+		<th>Description</th>
+		<th>EF Example</th>
+		<th>EF Core Example</th>
+ 	</tr>
+  <tr>
+    <td class="description">
       <b>Config files</b>
       <br/>
       <code>web.config</code> and <code>app.config</code> replaced by <code>appsettings.json</code>
@@ -75,30 +135,12 @@ using Microsoft.Extensions.Configuration;
 
 public void ConfigureServices(IServiceCollection services)
 {
-services.AddDbContext&lt;MyDbContext&gt;(options =>
-options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+&nbsp;&nbsp;&nbsp;&nbsp;services.AddDbContext&lt;MyDbContext&gt;(options =>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 }
+
 </pre>
 </td>
-  </tr>
-  <tr>
-    <td class="description">
-      <b>Spatial data types</b>
-      <br/>
-      Requires Nuget package: <code>NetTopologySuite</code>
-    </td>
-    <td class="ef-example">
-      <pre lang="csharp">
-using Microsoft.SqlServer.Types;
-      </pre>
-    </td>
-    <td class="ef-core-example">
-      <pre lang="csharp">
-using NetTopologySuite.Geometries;
-<br/>
-optionsBuilder.UseSqlServer(connectionString, options => options.UseNetTopologySuite());
-      </pre>
-    </td>
   </tr>
 <!-- TEMPLATE 
   <tr>
@@ -147,7 +189,7 @@ Required changes for the DbContext class
     </td>
     <td class="ef-example">
       <pre lang="csharp">
-public MyIssueTrackingContext(string nameOrConnectionString) 
+public MyBloggingContext(string nameOrConnectionString) 
     : base(nameOrConnectionString) 
 {
 }
@@ -157,7 +199,7 @@ public MyIssueTrackingContext(string nameOrConnectionString)
       <pre lang="csharp">
 private readonly string _connectionString;
 
-public MyIssueTrackingContext(string connectionString)
+public MyBloggingContext(string connectionString)
 {
 &nbsp;&nbsp;&nbsp;&nbsp;\_connectionString = connectionString;
 }
@@ -168,18 +210,21 @@ public override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 }
 
 </pre>
+<hr/>
+See "Configuration Changes" section above for an ASP.NET Core example with connection string configuration in a <code>startup.cs</code> file.
 </td>
 
   </tr>
   <tr>
     <td class="description">
       <b>Registering database providers</b>
-      <br/> Provider registration must be done in code using the <code>DbContextOptionsBuilder</code> class.
+      <br/> Provider registration must be done in code using the <code>DbContextOptionsBuilder</code> class or in <code>startup.cs</code> 
     </td>
     <td class="ef-example">
 (set in web.config/app.config or with <code>DbConfiguration.SetProviderServices()</code> method)
     </td>
     <td class="ef-core-example">
+      <code>MyDbContext.cs</code>
       <pre lang="csharp">
 // .UseSqlServer() registers Sql Server as the provider.
 //  Change according the database being used
@@ -190,6 +235,8 @@ public override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 &nbsp;&nbsp;&nbsp;&nbsp;optionsBuilder.UseSqlServer(_connectionString);
 }
       </pre>
+<hr/>
+See "Configuration Changes" section above for an ASP.NET Core example with database provider registration in a <code>startup.cs</code> file.
     </td>
   </tr>
   <tr>
@@ -200,18 +247,18 @@ public override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     </td>
     <td class="ef-example">
       <pre lang="csharp">
-context.Repos.Where(r => r.Name == "PortEF6ToCore")
-    .Include(r => r.CreatedBy)
-    .Include(r => r.Issues.Select(i => i.Assignees))
-    .Include(r => r.Issues.Select(i => i.Comments));
+context.Blogs.Where(b => b.Title == "MyBlogTitle")
+    .Include(b => b.Author)
+    .Include(b => b.Posts.Select(p => p.Content))
+    .Include(b => b.Posts.Select(p => p.Comments));
       </pre>
     </td>
     <td class="ef-core-example">
       <pre lang="csharp">
-context.Repos.Where(r => r.Name == "PortEF6ToCore")
-    .Include(r => r.CreatedBy)
-    .Include(r => r.Issues).ThenInclude(i => i.Assignees))
-    .Include(r => r.Issues).ThenInclude(i => i.Comments));
+context.Blogs.Where(b => b.Name == "PortEF6ToCore")
+    .Include(b => b.CreatedBy)
+    .Include(b => b.Posts).ThenInclude(p => p.Content))
+    .Include(b => b.Posts).ThenInclude(p => p.Comments));
       </pre>
     </td>
   </tr>
@@ -239,24 +286,24 @@ optionsBuilder.UseLazyLoadingProxies()
 // requires adding the nuget package Microsoft.EntityFrameworkCore.Abstractions
 using Microsoft.EntityFrameworkCore.Infrastructure;
 <br/>
-public class Repo
+public class Blog
 {
     private readonly ILazyLoader _lazyLoader;
     <br/>
-    public Repo()
+    public Blog()
     {
     }
     <br/>
-    public Repo(ILazyLoader lazyLoader)
+    public Blog(ILazyLoader lazyLoader)
     {
         _lazyLoader = lazyLoader;
     }
     <br/>
-    private List<Issue> _issues;
-    public List<Issue> Issues
+    private List<Post> _posts;
+    public List<Post> Posts
     {
-        get => _lazyLoader.Load(this, ref _issues);
-        set => _issues = value;
+        get => _lazyLoader.Load(this, ref _posts);
+        set => _posts = value;
     }
 }
       </pre>
@@ -308,12 +355,12 @@ optionsBuilder.UseLoggerFactory(LoggerFactory.Create(Console.WriteLine));
     </td>
     <td class="ef-example">
       <pre lang="csharp">
-var local = dbContext.Repos.Local;
+var local = dbContext.Blogs.Local;
       </pre>
     </td>
     <td class="ef-core-example">
       <pre lang="csharp">
-var local = dbContext.Repos.Local.ToObservableCollection();
+var local = dbContext.Blogs.Local.ToObservableCollection();
       </pre>
     </td>
   </tr>
@@ -345,12 +392,12 @@ dbContext.Database.EnsureDeleted();
     </td>
     <td class="ef-example">
       <pre lang="csharp">
-Repo added = dbContext.Repos.Add(repo);
+Blog added = dbContext.Blogs.Add(blog);
       </pre>
     </td>
     <td class="ef-core-example">
       <pre lang="csharp">
-Repo added = dbContext.Repos.Add(repo).Entity;
+Blog added = dbContext.Blogs.Add(blog).Entity;
       </pre>
     </td>
   </tr>
@@ -418,20 +465,20 @@ public void OnModelCreating(ModelBuilder modelBuilder)
     </td>
     <td class="ef-example">
       <pre lang="csharp">
-modelBuilder.Entity&lt;Issue&gt;()
-    .HasMany(i => i.Comments)
-    .WithRequired(c => c.Issue)
-    .HasForeignKey(c => c.IssueId)
+modelBuilder.Entity&lt;Blog&gt;()
+    .HasMany(b => b.Posts)
+    .WithRequired(p => p.Blog)
+    .HasForeignKey(p => p.BlogId)
     .WillCascadeOnDelete(true);
       </pre>
     </td>
     <td class="ef-core-example">
       <pre lang="csharp">
-modelBuilder.Entity&lt;Issue&gt;()
-    .HasMany(i => i.Comments)
-    .WithOne(c => c.Issue)
+modelBuilder.Entity&lt;Blog&gt;()
+    .HasMany(b => b.Posts)
+    .WithOne(p => p.Blog)
     .IsRequired(true)
-    .HasForeignKey(c => c.IssueId)
+    .HasForeignKey(p => p.BlogId)
     .OnDelete(DeleteBehavior.Cascade)
       </pre>
     </td>
@@ -634,6 +681,57 @@ END TEMPLATE -->
 
 ---
 
+<!----------- BEHAVIORAL CHANGES ----------->
+
+## Behavioral Changes
+
+These Entity Framework features exhibit different behavior in Entity Framework Core. Here's what to watch out for:
+
+<table>
+  <colgroup>
+    <col style="width:20%">
+    <col style="width:40%">
+    <col style="width:40%">
+  </colgroup>
+	<tr>
+		<th>Feature</th>
+		<th>EF Behavior</th>
+		<th>EF Core Behavior</th>
+ 	</tr>
+  <tr>
+    <td class="description">
+      <b>Change Tracking</b>
+    </td>
+    <td class="ef-behavior">
+[placeholder]
+    </td>
+    <td class="ef-core-behavior">
+[placeholder]
+    </td>
+  </tr>
+
+<!-- TEMPLATE
+  <tr>
+    <td class="description">
+      <b>s</b>
+      <br/>
+    </td>
+    <td class="ef-behavior">
+      <pre lang="csharp">
+s
+      </pre>
+    </td>
+    <td class="ef-core-behavior">
+      <pre lang="csharp">
+s
+      </pre>
+    </td>
+  </tr>
+END TEMPLATE -->
+</table>
+
+---
+
 <!----------- MISSING FEATURES ----------->
 
 ## Missing Features
@@ -731,21 +829,21 @@ Table description
     <col style="width:40%">
   </colgroup>
 	<tr>
-		<th>Description</th>
-		<th>EF Example</th>
-		<th>EF Core Example</th>
+		<th>col1</th>
+		<th>col2</th>
+		<th>col3</th>
  	</tr>
   <tr>
-    <td class="description">
+    <td class="col1">
       <b>s</b>
       <br/>
     </td>
-    <td class="ef-example">
+    <td class="col2">
       <pre lang="csharp">
 s
       </pre>
     </td>
-    <td class="ef-core-example">
+    <td class="col3">
       <pre lang="csharp">
 s
       </pre>
