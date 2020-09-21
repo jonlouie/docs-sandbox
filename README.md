@@ -283,7 +283,7 @@ optionsBuilder.UseLazyLoadingProxies()
       </pre>
       <pre lang="csharp">
 // lazy loading enabled via ILazyLoader service
-// requires adding the nuget package Microsoft.EntityFrameworkCore.Abstractions
+// requires adding the Nuget package Microsoft.EntityFrameworkCore.Abstractions
 using Microsoft.EntityFrameworkCore.Infrastructure;
 <br/>
 public class Blog
