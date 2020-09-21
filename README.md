@@ -28,35 +28,39 @@ Overview of porting Entity Framework to EF Core based on commonly-used features 
 		<th>EF Core Example</th>
  	</tr>
   <tr>
-    <td class="col1">
-      Replace Entity Framework namespace
-      <br/><br/>
+    <td class="description">
+      <b>Entity Framework namespace</b>
+      <br/>
+      Replaced by EF Core namespace
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 using System.Data.Entity;
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 using Microsoft.EntityFrameworkCore;
       </pre>
     </td>
   </tr>
   <tr>
-    <td class="col1">
-      <b><code>web.config</code> and <code>app.config</code> replaced by <code>appsettings.json</code></b>
+    <td class="description">
+      <b>Config files</b>
+      <br/>
+      <code>web.config</code> and <code>app.config</code> replaced by <code>appsettings.json</code>
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="xml">
 &lt;configuration&gt;
   &lt;connectionStrings&gt;
-    &lt;add name="myConnection" connectionString="server=localhost;database=mydatabase;" /&gt;
+    &lt;add name="myConnection"
+        connectionString="server=localhost;database=mydatabase;" /&gt;
   &lt;/connectionStrings&gt;
 &lt;/configuration&gt;
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <code>appsettings.json</code>
       <pre lang="json">
 {
@@ -78,17 +82,17 @@ options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 </td>
   </tr>
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>Spatial data types</b>
       <br/>
       Requires Nuget package: <code>NetTopologySuite</code>
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 using Microsoft.SqlServer.Types;
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 using NetTopologySuite.Geometries;
 <br/>
@@ -98,16 +102,16 @@ optionsBuilder.UseSqlServer(connectionString, options => options.UseNetTopologyS
   </tr>
 <!-- TEMPLATE 
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>s</b>
       <br/>
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 s
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 s
       </pre>
@@ -136,12 +140,12 @@ Required changes for the DbContext class
 		<th>EF Core Example</th>
  	</tr>
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>Connection strings</b> 
       <br/>
       No longer passed into the base constructor. Set the connection string with the <code>DbContextOptionsBuilder</code> class.
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 public MyIssueTrackingContext(string nameOrConnectionString) 
     : base(nameOrConnectionString) 
@@ -149,7 +153,7 @@ public MyIssueTrackingContext(string nameOrConnectionString)
 }
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 private readonly string _connectionString;
 
@@ -168,14 +172,14 @@ public override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 
   </tr>
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>Registering database providers</b>
       <br/> Provider registration must be done in code using the <code>DbContextOptionsBuilder</code> class.
     </td>
-    <td class="col2">
+    <td class="ef-example">
 (set in web.config/app.config or with <code>DbConfiguration.SetProviderServices()</code> method)
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 // .UseSqlServer() registers Sql Server as the provider.
 //  Change according the database being used
@@ -189,12 +193,12 @@ public override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     </td>
   </tr>
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>Eager Loading</b>
       <br/>
       Eagerly loading related entities using a <code>.Select()</code> drill-down has been replaced by <code>.ThenInclude()</code>.
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 context.Repos.Where(r => r.Name == "PortEF6ToCore")
     .Include(r => r.CreatedBy)
@@ -202,7 +206,7 @@ context.Repos.Where(r => r.Name == "PortEF6ToCore")
     .Include(r => r.Issues.Select(i => i.Comments));
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 context.Repos.Where(r => r.Name == "PortEF6ToCore")
     .Include(r => r.CreatedBy)
@@ -212,19 +216,19 @@ context.Repos.Where(r => r.Name == "PortEF6ToCore")
     </td>
   </tr>
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>Lazy Loading</b>
       <br/>
       Must be enabled using the <code>DbContextOptionsBuilder</code> class or with an <code>ILazyLoader</code> service.
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 dbContext.Configuration.LazyLoadingEnabled = true; 
 <br/>
 dbContext.Configuration.LazyLoadingEnabled = false; 
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 // lazy loading disabled by default
 // lazy loading enabled via proxies
@@ -259,18 +263,18 @@ public class Repo
     </td>
   </tr>
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>Enabling proxy creation</b>
       <br/>
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 context.Configuration.ProxyCreationEnabled = true;
 <br/>
 context.Configuration.ProxyCreationEnabled = false;
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 // proxies are disabled by default
 optionsBuilder.UseLazyLoadingProxies()
@@ -278,17 +282,17 @@ optionsBuilder.UseLazyLoadingProxies()
     </td>
   </tr>
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>Logging generated SQL</b>
       <br/>
       Logging method is set using the <code>DbContextOptionsBuilder</code> class.
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 dbContext.Database.Log = Console.WriteLine;
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
     <pre lang="csharp">
 using Microsoft.Extensions.Logging namespace;
 <br/>
@@ -297,35 +301,35 @@ optionsBuilder.UseLoggerFactory(LoggerFactory.Create(Console.WriteLine));
     </td>
   </tr>
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>DbSet.Local property</b>
       <br/>
       Now returns a <code>LocalView&lt;TEntity&gt;</code> instead of an <code>ObservableCollection&lt;T&gt;</code>
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 var local = dbContext.Repos.Local;
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 var local = dbContext.Repos.Local.ToObservableCollection();
       </pre>
     </td>
   </tr>
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>Database Creation/Deletion</b>
       <br/>
       Methods to create/delete a database have been renamed.
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 dbContext.Database.CreateIfNotExists();
 dbContext.Database.Delete();
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 dbContext.Database.EnsureCreated();
 dbContext.Database.EnsureDeleted();
@@ -333,18 +337,18 @@ dbContext.Database.EnsureDeleted();
     </td>
   </tr>
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>Return type of </b><code>DbSet&lt;T&gt;.Add()</code>
       <br/>
       Changed from <code>T</code> to <code>EntityEntry&lt;T&gt;</code>
       <br/>
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 Repo added = dbContext.Repos.Add(repo);
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 Repo added = dbContext.Repos.Add(repo).Entity;
       </pre>
@@ -353,16 +357,16 @@ Repo added = dbContext.Repos.Add(repo).Entity;
 
 <!-- TEMPLATE
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>s</b>
       <br/>
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 s
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 s
       </pre>
@@ -391,28 +395,28 @@ DbModelBuilder, often used in the <code>DbContext.OnModelCreating()</code> metho
 		<th>EF Core Example</th>
  	</tr>
   <tr>
-    <td class="col1">
+    <td class="description">
       Renamed <code>DbModelBuilder</code> class to <code>ModelBuilder</code>
       <br/><br/>
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 public void OnModelCreating(DbModelBuilder modelBuilder)
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 public void OnModelCreating(ModelBuilder modelBuilder)
       </pre>
     </td>
   </tr>
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>Many:Required relationship configuration</b>
       <br/>
       <code>.WithRequired()</code> replaced by <code>.WithOne().IsRequired()</code>
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 modelBuilder.Entity&lt;Issue&gt;()
     .HasMany(i => i.Comments)
@@ -421,7 +425,7 @@ modelBuilder.Entity&lt;Issue&gt;()
     .WillCascadeOnDelete(true);
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 modelBuilder.Entity&lt;Issue&gt;()
     .HasMany(i => i.Comments)
@@ -433,18 +437,18 @@ modelBuilder.Entity&lt;Issue&gt;()
     </td>
   </tr>
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>Delete behavior</b>
       <br/>
       <code>.WillCascadeOnDelete()</code> replaced by <code>.OnDelete()</code>
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 .WillCascadeOnDelete(true);
 .WillCascadeOnDelete(false);
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 .OnDelete(DeleteBehavior.Cascade);
 .OnDelete(DeleteBehavior.Restrict);
@@ -454,16 +458,16 @@ modelBuilder.Entity&lt;Issue&gt;()
 
 <!-- TEMPLATE
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>s</b>
       <br/>
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 s
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 s
       </pre>
@@ -491,17 +495,17 @@ Changes in how data is accessed and tracked
 		<th>EF Core Example</th>
  	</tr>
   <tr>
-    <td class="col1">
+    <td class="description">
       Renamed <code>DbChangeTracker</code> to <code>ChangeTracker</code>
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 private void DisplayTrackedEntities(DbChangeTracker changeTracker)
 {
 }
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 <br/>
@@ -512,16 +516,16 @@ private void DisplayTrackedEntities(ChangeTracker changeTracker)
     </td>
   </tr>
   <tr>
-    <td class="col1">
+    <td class="description">
       Replaced <code>DbContextTransaction</code> with <code>IDbContextTransaction</code>
       <br/>
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 DbContextTransaction transaction = dbContext.Database.BeginTransaction();
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 using Microsoft.EntityFrameworkCore.Storage;
 <br/>
@@ -530,11 +534,11 @@ IDbContextTransaction transaction = dbContext.Database.BeginTransaction();
     </td>
   </tr>
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>Raw SQL Queries (returning entities)</b>
       <br/>
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 // Sql string
 DbSet.SqlQuery("SELECT * FROM MyTable");
@@ -543,7 +547,7 @@ DbSet.SqlQuery("SELECT * FROM MyTable");
 DbSet.SqlQuery("SELECT * FROM MyTable WHERE id={0}", id);
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 // Sql string
 DbSet.FromSqlRaw("SELECT * FROM MyTable");
@@ -558,11 +562,11 @@ DbSet.FromSqlInterpolated($"SELECT * FROM MyTable WHERE id={id}");
 
   </tr>
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>Raw SQL Queries (commands)</b>
       <br/>
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 // Sql string
 dbContext.Database.ExecuteSqlCommand("sp_UpdateAll");
@@ -571,7 +575,7 @@ dbContext.Database.ExecuteSqlCommand("sp_UpdateAll");
 dbContext.Database.ExecuteSqlCommand("sp_InsertId {0}", id);
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 // Sql string
 dbContext.Database.ExecuteSqlRaw("sp_UpdateAll");
@@ -585,10 +589,10 @@ dbContext.Database.ExecuteSqlInterpolated($"sp_InsertId {id}");
     </td>
   </tr>
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>Compiled queries</b>
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 using System.Data.Objects;
 <br/>
@@ -597,7 +601,7 @@ CompiledQuery.Compile&lt;TContext, TParam1, ..., TParamN, TResult&gt;(
 );
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 using Microsoft.EntityFrameworkCore;
 <br/>
@@ -610,16 +614,16 @@ EF.CompileQuery&lt;TContext, TParam1, ..., TParamN, TResult&gt;(
 
 <!-- TEMPLATE
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>s</b>
       <br/>
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 s
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 s
       </pre>
@@ -648,65 +652,65 @@ These Entity Framework features are missing from EF Core and may or may not be i
 		<th>Implementation Plan</th>
  	</tr>
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>TPC (Table-per-Concrete)</b>
     </td>
-    <td class="col2">
+    <td class="ef-example">
       Allows entity classes with an abstract base class to be mapped to separate database tables (abstract base class remains unmapped)
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       On backlog
     </td>
   </tr>
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>Entity splitting</b>
       <br/>
     </td>
-    <td class="col2">
+    <td class="ef-example">
 Allows single entities to be mapped to multiple tables (i.e. a subset of properties mapped to one table, another subset mapped to another table).
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
 On backlog
     </td>
   </tr>
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>Visual Designer</b>
       <br/>
     </td>
-    <td class="col2">
+    <td class="ef-example">
 GUI-based db modeling tool that automatically generates DbContext and entity classes from a UML diagram. It also includes additional features such as auto-generated CUD stored procedures.
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
 Not planned
     </td>
   </tr>
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>ObjectContext class</b>
       <br/>
     </td>
-    <td class="col2">
+    <td class="ef-example">
 A low level class used to facilitate data access in a generic manner. It is commonly used when a stored procedure returns multiple result sets that each map to a different entity type.
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
 Not planned
     </td>
   </tr>
 
 <!-- TEMPLATE
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>s</b>
       <br/>
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 s
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 s
       </pre>
@@ -732,16 +736,16 @@ Table description
 		<th>EF Core Example</th>
  	</tr>
   <tr>
-    <td class="col1">
+    <td class="description">
       <b>s</b>
       <br/>
     </td>
-    <td class="col2">
+    <td class="ef-example">
       <pre lang="csharp">
 s
       </pre>
     </td>
-    <td class="col3">
+    <td class="ef-core-example">
       <pre lang="csharp">
 s
       </pre>
