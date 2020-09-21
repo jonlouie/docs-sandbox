@@ -700,6 +700,32 @@ These Entity Framework features exhibit different behavior in Entity Framework C
  	</tr>
   <tr>
     <td class="description">
+      <b>Lazy loading</b>
+    </td>
+    <td class="ef-behavior">
+Enabled by default
+    </td>
+    <td class="ef-core-behavior">
+Not enabled by default
+    </td>
+  </tr>
+  <tr>
+    <td class="description">
+      <b>Lazy loading by proxies</b>
+    </td>
+    <td class="ef-behavior">
+Use of lazy loading proxies can be set on the fly with the follow statements:
+      <pre lang="csharp">
+context.Configuration.ProxyCreationEnabled = true;
+context.Configuration.ProxyCreationEnabled = false;
+      </pre>
+    </td>
+    <td class="ef-core-behavior">
+Dynamically enabling/disabling lazy loading proxies no longer exists in EF Core. Use of lazy loading proxies can only be set upon DbContext instantiation.
+    </td>
+  </tr>
+  <tr>
+    <td class="description">
       <b>Change Tracking</b>
     </td>
     <td class="ef-behavior">
