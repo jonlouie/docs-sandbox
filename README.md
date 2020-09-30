@@ -1,4 +1,4 @@
-# Entity Framework to EF Core Porting Cheat Sheet
+# Entity Framework to EF Core Porting Reference
 
 Overview of porting Entity Framework to EF Core based on commonly-used features and APIs.
 
