@@ -1,18 +1,22 @@
+<<<<<<< HEAD
 # Entity Framework to EF Core Porting Reference
+=======
+# Entity Framework to EF Core Porting Reference Guide
+>>>>>>> 87a0b43... updates
 
-Overview of porting Entity Framework to EF Core based on commonly-used features and APIs.
+A general reference for developers looking to migrate from Entity Framework to EF Core
 
 ---
 
 ## Table of Contents
 
-- Syntactical changes
+- Syntactical Differences
   - [Namespace Changes](#namespace-changes)
   - [Configuration Changes](#configuration-changes)
   - [DbContext Changes](#dbcontext-changes)
   - [DbModelBuilder Changes](#dbmodelbuilder-changes)
   - [Data Access and Tracking Changes](#data-access-and-tracking-changes)
-- [Behavioral Changes](#behavioral-changes)
+- [Behavioral Differences](#behavioral-changes)
 - [Missing Features](#missing-features)
 
 ---
@@ -20,7 +24,9 @@ Overview of porting Entity Framework to EF Core based on commonly-used features 
 <br/> 
 <!----------- INITIAL CHANGES ----------->
 
-## Namespace Changes
+## Syntactical Differences
+
+### Namespace Changes
 
 <table>
   <colgroup>
@@ -91,7 +97,7 @@ END TEMPLATE -->
 
 ---
 
-## Configuration Changes
+### Configuration Changes
 
 <table>
   <colgroup>
@@ -166,7 +172,7 @@ END TEMPLATE -->
 
 <!----------- DB CONTEXT ----------->
 
-## DbContext Changes
+### DbContext Changes
 
 Required changes for the DbContext class
 
@@ -426,7 +432,7 @@ END TEMPLATE -->
 
 <!----------- DB MODELBUILDER ----------->
 
-## DbModelBuilder Changes
+### DbModelBuilder Changes
 
 DbModelBuilder, often used in the <code>DbContext.OnModelCreating()</code> method, requires the following changes:
 
@@ -522,11 +528,11 @@ s
   </tr>
 END TEMPLATE -->
 
-## </table>
+</table>
 
 <!-- DATA ACCESS AND TRACKING -->
 
-## Data Access and Tracking Changes
+### Data Access and Tracking Changes
 
 Changes in how data is accessed and tracked
 
@@ -726,7 +732,7 @@ Dynamically enabling/disabling lazy loading proxies no longer exists in EF Core.
   </tr>
   <tr>
     <td class="description">
-      <b>Change Tracking</b>
+      <b>Change tracking</b>
     </td>
     <td class="ef-behavior">
 [placeholder]
