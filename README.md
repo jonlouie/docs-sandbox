@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 # Entity Framework to EF Core Porting Reference
-=======
-# Entity Framework to EF Core Porting Reference Guide
->>>>>>> 87a0b43... updates
 
 A general reference for developers looking to migrate from Entity Framework to EF Core
 
